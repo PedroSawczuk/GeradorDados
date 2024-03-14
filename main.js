@@ -65,7 +65,7 @@ const nomes_M = [
       "." +
       sobrenome.toLowerCase() +
       dominios[Math.floor(Math.random() * dominios.length)];
-    return email.replace(/\s/g, ""); // Remover espaços do email, se houver
+    return email.replace(/\s/g, "");
   }
   
   function gerarCPF() {
@@ -110,16 +110,13 @@ const nomes_M = [
   function gerarDataNascimento() {
     var dataAtual = new Date();
     var anoAtual = dataAtual.getFullYear();
-    var anoNascimento = Math.floor(Math.random() * 80) + (anoAtual - 80); // Gerar data de nascimento nos últimos 80 anos
-    var mesNascimento = Math.floor(Math.random() * 12) + 1; // Gerar mês de 1 a 12
+    var anoNascimento = Math.floor(Math.random() * 80) + (anoAtual - 80); 
+    var mesNascimento = Math.floor(Math.random() * 12) + 1; 
     var diaNascimento;
   
-    // Para garantir que o dia gerado seja válido para o mês
     if (mesNascimento === 2) {
-      // Fevereiro
-      diaNascimento = Math.floor(Math.random() * 28) + 1; // Considerando um ano não bissexto
+      diaNascimento = Math.floor(Math.random() * 28) + 1;
     } else if ([4, 6, 9, 11].includes(mesNascimento)) {
-      // Abril, Junho, Setembro, Novembro
       diaNascimento = Math.floor(Math.random() * 30) + 1;
     } else {
       // Outros meses
@@ -137,7 +134,7 @@ const nomes_M = [
     var tipoVia = Math.random() < 0.5 ? "avenida" : "rua";
     var nomeVia = tipoVia === "avenida" ? "Avenida" : "Rua";
     var nome = nome_endereço[Math.floor(Math.random() * nome_endereço.length)];
-    var numero = Math.floor(Math.random() * 9899) + 100; // Gerar número entre 100 e 9999
+    var numero = Math.floor(Math.random() * 9899) + 100;
     return `${nomeVia} ${nome}, ${numero}`;
   }
   
@@ -147,9 +144,9 @@ const nomes_M = [
 }
 
 function gerarTelefone() {
-  var ddd = Math.floor(Math.random() * 90) + 10; // Gera um DDD aleatório entre 10 e 99
-  var parte1 = Math.floor(Math.random() * 90000) + 10000; // Gera a primeira parte do número entre 10000 e 99999
-  var parte2 = Math.floor(Math.random() * 9000) + 1000; // Gera a segunda parte do número entre 1000 e 9999
+  var ddd = Math.floor(Math.random() * 90) + 10; 
+  var parte1 = Math.floor(Math.random() * 90000) + 10000;
+  var parte2 = Math.floor(Math.random() * 9000) + 1000; 
   return `(${ddd}) ${parte1}-${parte2}`;
 }
 
@@ -164,7 +161,6 @@ function gerarEstado() {
 }
 
 function gerarUsername(nome, sobrenome) {
-  // Converte o nome e sobrenome para lowercase e remove espaços
   var username = (nome.toLowerCase() + sobrenome.toLowerCase()).replace(/\s/g, '');
   return username;
 }
@@ -179,7 +175,7 @@ function gerarCodigo() {
   var numeroLinhas = document.getElementById("numeroLinhas").value;
   var camposSelecionados = [];
   var checkboxes = document.getElementsByName("dadosCheckbox");
-  var nome, sobrenome; // Declaração das variáveis nome e sobrenome fora do loop
+  var nome, sobrenome;
 
   var nomeCheckbox = document.getElementById("nomeCheckbox");
 
@@ -196,38 +192,36 @@ function gerarCodigo() {
 
   var codigoSQL = "CREATE TABLE " + nomeTabela + " (";
 
-  // Adiciona o comando SQL para criar cada campo selecionado
   for (var i = 0; i < camposSelecionados.length; i++) {
     if (i > 0) {
       codigoSQL += ", ";
     }
     codigoSQL += camposSelecionados[i];
     if (camposSelecionados[i] === "nome") {
-      codigoSQL += " VARCHAR(100)"; // Ajuste o tamanho conforme necessário
+      codigoSQL += " VARCHAR(255)"; 
     } else if (camposSelecionados[i] === "email") {
-      codigoSQL += " VARCHAR(255)"; // Ajuste o tamanho conforme necessário
+      codigoSQL += " VARCHAR(255)"; 
     } else if (camposSelecionados[i] === "cpf") {
-      codigoSQL += " VARCHAR(14)"; // CPF possui 14 caracteres
+      codigoSQL += " VARCHAR(11)"; 
     } else if (camposSelecionados[i] === "data_nascimento") {
       codigoSQL += " DATE";
     } else if (camposSelecionados[i] === "endereco") {
-      codigoSQL += " VARCHAR(255)"; // Ajuste o tamanho conforme necessário
+      codigoSQL += " VARCHAR(255)"; 
     } else if (camposSelecionados[i] === "cep") {
-      codigoSQL += " VARCHAR(9)"; // CEP possui 9 caracteres
+      codigoSQL += " VARCHAR(9)"; 
     } else if (camposSelecionados[i] === "telefone") {
-      codigoSQL += " VARCHAR(15)"; // Ajuste o tamanho conforme necessário
+      codigoSQL += " VARCHAR(15)"; 
     } else if (camposSelecionados[i] === "estado") {
-      codigoSQL += " VARCHAR(50)"; // Ajuste o tamanho conforme necessário
+      codigoSQL += " VARCHAR(50)"; 
     } else if (camposSelecionados[i] === "username") {
-      codigoSQL += " VARCHAR(50)"; // Ajuste o tamanho conforme necessário
+      codigoSQL += " VARCHAR(50)"; 
     } else {
-      codigoSQL += " VARCHAR(255)"; // Caso padrão
+      codigoSQL += " VARCHAR(255)"; 
     }
   }
 
-  codigoSQL += ");\n\n"; // Finaliza o comando de criação da tabela
+  codigoSQL += ");\n\n";
 
-  // Adiciona o comando SQL para inserir os registros na tabela
   codigoSQL += "INSERT INTO " + nomeTabela + " (";
 
   for (var i = 0; i < camposSelecionados.length; i++) {
