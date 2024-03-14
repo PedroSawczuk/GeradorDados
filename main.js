@@ -171,9 +171,9 @@ function gerarUsername(nome, sobrenome) {
 
 function gerarCodigo() {
   var nomeTabela = document.getElementById("nomeTabela").value;
-  
+
   if (!nomeTabela.trim()) {
-    nomeTabela = "MinhaTabela"; 
+    nomeTabela = "MinhaTabela";
   }
 
   var numeroLinhas = document.getElementById("numeroLinhas").value;
@@ -189,56 +189,90 @@ function gerarCodigo() {
   }
 
   for (var i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].checked) {
-          camposSelecionados.push(checkboxes[i].value);
-      }
+    if (checkboxes[i].checked) {
+      camposSelecionados.push(checkboxes[i].value);
+    }
   }
 
-  var codigoSQL = "INSERT INTO " + nomeTabela + " (";
+  var codigoSQL = "CREATE TABLE " + nomeTabela + " (";
+
+  // Adiciona o comando SQL para criar cada campo selecionado
+  for (var i = 0; i < camposSelecionados.length; i++) {
+    if (i > 0) {
+      codigoSQL += ", ";
+    }
+    codigoSQL += camposSelecionados[i];
+    if (camposSelecionados[i] === "nome") {
+      codigoSQL += " VARCHAR(100)"; // Ajuste o tamanho conforme necessário
+    } else if (camposSelecionados[i] === "email") {
+      codigoSQL += " VARCHAR(255)"; // Ajuste o tamanho conforme necessário
+    } else if (camposSelecionados[i] === "cpf") {
+      codigoSQL += " VARCHAR(14)"; // CPF possui 14 caracteres
+    } else if (camposSelecionados[i] === "data_nascimento") {
+      codigoSQL += " DATE";
+    } else if (camposSelecionados[i] === "endereco") {
+      codigoSQL += " VARCHAR(255)"; // Ajuste o tamanho conforme necessário
+    } else if (camposSelecionados[i] === "cep") {
+      codigoSQL += " VARCHAR(9)"; // CEP possui 9 caracteres
+    } else if (camposSelecionados[i] === "telefone") {
+      codigoSQL += " VARCHAR(15)"; // Ajuste o tamanho conforme necessário
+    } else if (camposSelecionados[i] === "estado") {
+      codigoSQL += " VARCHAR(50)"; // Ajuste o tamanho conforme necessário
+    } else if (camposSelecionados[i] === "username") {
+      codigoSQL += " VARCHAR(50)"; // Ajuste o tamanho conforme necessário
+    } else {
+      codigoSQL += " VARCHAR(255)"; // Caso padrão
+    }
+  }
+
+  codigoSQL += ");\n\n"; // Finaliza o comando de criação da tabela
+
+  // Adiciona o comando SQL para inserir os registros na tabela
+  codigoSQL += "INSERT INTO " + nomeTabela + " (";
 
   for (var i = 0; i < camposSelecionados.length; i++) {
-      if (i > 0) {
-          codigoSQL += ", ";
-      }
-      codigoSQL += camposSelecionados[i];
+    if (i > 0) {
+      codigoSQL += ", ";
+    }
+    codigoSQL += camposSelecionados[i];
   }
 
   codigoSQL += ") VALUES ";
 
   for (var i = 0; i < numeroLinhas; i++) {
-      if (i > 0) {
-          codigoSQL += ", ";
+    if (i > 0) {
+      codigoSQL += ", ";
+    }
+    codigoSQL += "(";
+    for (var j = 0; j < camposSelecionados.length; j++) {
+      if (j > 0) {
+        codigoSQL += ", ";
       }
-      codigoSQL += "(";
-      for (var j = 0; j < camposSelecionados.length; j++) {
-          if (j > 0) {
-              codigoSQL += ", ";
-          }
-          if (camposSelecionados[j] === "nome") {
-              nome = gerarNome(); 
-              sobrenome = gerarSobrenome(); 
-              codigoSQL += "'" + nome + " " + sobrenome + "'";
-          } else if (camposSelecionados[j] === "email") {
-              codigoSQL += "'" + gerarEmail(nome, sobrenome) + "'"; 
-          } else if (camposSelecionados[j] === "cpf") {
-              codigoSQL += "'" + gerarCPF() + "'";
-          } else if (camposSelecionados[j] === "data_nascimento") {
-              codigoSQL += "'" + gerarDataNascimento() + "'";
-          } else if (camposSelecionados[j] === "endereco") {
-              codigoSQL += "'" + gerarEndereco() + "'";
-          } else if (camposSelecionados[j] === "cep") {
-              codigoSQL += "'" + gerarCEP() + "'";
-          } else if (camposSelecionados[j] === "telefone") {
-              codigoSQL += "'" + gerarTelefone() + "'";
-          } else if (camposSelecionados[j] === "estado") {
-              codigoSQL += "'" + gerarEstado() + "'";
-          } else if (camposSelecionados[j] === "username") {
-              codigoSQL += "'" + gerarUsername(nome, sobrenome) + "'"; 
-          } else {
-              codigoSQL += "'Dado_" + (i + 1) + "'";
-          }
+      if (camposSelecionados[j] === "nome") {
+        nome = gerarNome();
+        sobrenome = gerarSobrenome();
+        codigoSQL += "'" + nome + " " + sobrenome + "'";
+      } else if (camposSelecionados[j] === "email") {
+        codigoSQL += "'" + gerarEmail(nome, sobrenome) + "'";
+      } else if (camposSelecionados[j] === "cpf") {
+        codigoSQL += "'" + gerarCPF() + "'";
+      } else if (camposSelecionados[j] === "data_nascimento") {
+        codigoSQL += "'" + gerarDataNascimento() + "'";
+      } else if (camposSelecionados[j] === "endereco") {
+        codigoSQL += "'" + gerarEndereco() + "'";
+      } else if (camposSelecionados[j] === "cep") {
+        codigoSQL += "'" + gerarCEP() + "'";
+      } else if (camposSelecionados[j] === "telefone") {
+        codigoSQL += "'" + gerarTelefone() + "'";
+      } else if (camposSelecionados[j] === "estado") {
+        codigoSQL += "'" + gerarEstado() + "'";
+      } else if (camposSelecionados[j] === "username") {
+        codigoSQL += "'" + gerarUsername(nome, sobrenome) + "'";
+      } else {
+        codigoSQL += "'Dado_" + (i + 1) + "'";
       }
-      codigoSQL += ")";
+    }
+    codigoSQL += ")";
   }
 
   document.getElementById("codigoGerado").value = codigoSQL;
