@@ -79,29 +79,10 @@ const nomes_M = [
     var n7 = Math.floor(Math.random() * n);
     var n8 = Math.floor(Math.random() * n);
     var n9 = Math.floor(Math.random() * n);
-    var d1 =
-      n9 * 2 +
-      n8 * 3 +
-      n7 * 4 +
-      n6 * 5 +
-      n5 * 6 +
-      n4 * 7 +
-      n3 * 8 +
-      n2 * 9 +
-      n1 * 10;
+    var d1 = n9 * 2 + n8 * 3 + n7 * 4 + n6 * 5 + n5 * 6 + n4 * 7 + n3 * 8 + n2 * 9 + n1 * 10;
     d1 = 11 - (d1 % 11);
     if (d1 >= 10) d1 = 0;
-    var d2 =
-      d1 * 2 +
-      n9 * 3 +
-      n8 * 4 +
-      n7 * 5 +
-      n6 * 6 +
-      n5 * 7 +
-      n4 * 8 +
-      n3 * 9 +
-      n2 * 10 +
-      n1 * 11;
+    var d2 = d1 * 2 + n9 * 3 + n8 * 4 + n7 * 5 + n6 * 6 + n5 * 7 + n4 * 8 + n3 * 9 + n2 * 10 + n1 * 11;
     d2 = 11 - (d2 % 11);
     if (d2 >= 10) d2 = 0;
     return "" + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9 + d1 + d2;
@@ -119,11 +100,9 @@ const nomes_M = [
     } else if ([4, 6, 9, 11].includes(mesNascimento)) {
       diaNascimento = Math.floor(Math.random() * 30) + 1;
     } else {
-      // Outros meses
       diaNascimento = Math.floor(Math.random() * 31) + 1;
     }
   
-    // Adiciona zeros à esquerda se o dia ou mês for menor que 10
     var diaFormatado = diaNascimento < 10 ? "0" + diaNascimento : diaNascimento;
     var mesFormatado = mesNascimento < 10 ? "0" + mesNascimento : mesNascimento;
   
@@ -165,119 +144,157 @@ function gerarUsername(nome, sobrenome) {
   return username;
 }
 
+function salvarPermissoes() {
+  var permissaoInput = document.getElementById("permissaoInput").value;
+  if (permissaoInput.trim() !== "") {
+      camposSelecionados.push("permissao");
+  }
+
+  gerarCodigo();
+}
+
+function gerarPermissao(permissoes) {
+  var permissoesArray = permissoes.split(","); // Separar as permissões por vírgula
+  var permissaoAleatoria = permissoesArray[Math.floor(Math.random() * permissoesArray.length)];
+  return permissaoAleatoria.trim(); // Remover espaços em branco
+}
+
 function gerarCodigo() {
   var nomeTabela = document.getElementById("nomeTabela").value;
 
   if (!nomeTabela.trim()) {
-    nomeTabela = "MinhaTabela";
+      nomeTabela = "MinhaTabela";
   }
 
   var numeroLinhas = document.getElementById("numeroLinhas").value;
   var camposSelecionados = [];
   var checkboxes = document.getElementsByName("dadosCheckbox");
-  var nome, sobrenome;
+  var nome, sobrenome; // Declaração das variáveis nome e sobrenome fora do loop
 
   var nomeCheckbox = document.getElementById("nomeCheckbox");
 
   if (!nomeCheckbox.checked) {
-    alert("Por favor, selecione o campo Nome!");
-    return;
+      alert("Por favor, selecione o campo Nome!");
+      return;
   }
 
   for (var i = 0; i < checkboxes.length; i++) {
-    if (checkboxes[i].checked) {
-      camposSelecionados.push(checkboxes[i].value);
-    }
+      if (checkboxes[i].checked) {
+          camposSelecionados.push(checkboxes[i].value);
+      }
   }
 
   var codigoSQL = "CREATE TABLE " + nomeTabela + " (";
 
+  // Adiciona o comando SQL para criar cada campo selecionado
   for (var i = 0; i < camposSelecionados.length; i++) {
-    if (i > 0) {
-      codigoSQL += ", ";
-    }
-    codigoSQL += camposSelecionados[i];
-    if (camposSelecionados[i] === "nome") {
-      codigoSQL += " VARCHAR(255)"; 
-    } else if (camposSelecionados[i] === "email") {
-      codigoSQL += " VARCHAR(255)"; 
-    } else if (camposSelecionados[i] === "cpf") {
-      codigoSQL += " VARCHAR(11)"; 
-    } else if (camposSelecionados[i] === "data_nascimento") {
-      codigoSQL += " DATE";
-    } else if (camposSelecionados[i] === "endereco") {
-      codigoSQL += " VARCHAR(255)"; 
-    } else if (camposSelecionados[i] === "cep") {
-      codigoSQL += " VARCHAR(9)"; 
-    } else if (camposSelecionados[i] === "telefone") {
-      codigoSQL += " VARCHAR(15)"; 
-    } else if (camposSelecionados[i] === "estado") {
-      codigoSQL += " VARCHAR(50)"; 
-    } else if (camposSelecionados[i] === "username") {
-      codigoSQL += " VARCHAR(50)"; 
-    } else {
-      codigoSQL += " VARCHAR(255)"; 
-    }
+      if (i > 0) {
+          codigoSQL += ", ";
+      }
+      if (camposSelecionados[i] === "permissao") {
+          codigoSQL += camposSelecionados[i] + " VARCHAR(50)"; // Tamanho da permissão pode ser ajustado conforme necessário
+      } else {
+          codigoSQL += camposSelecionados[i];
+          if (camposSelecionados[i] === "nome") {
+              codigoSQL += " VARCHAR(100)"; // Ajuste o tamanho conforme necessário
+          } else if (camposSelecionados[i] === "email") {
+              codigoSQL += " VARCHAR(255)"; // Ajuste o tamanho conforme necessário
+          } else if (camposSelecionados[i] === "cpf") {
+              codigoSQL += " VARCHAR(14)"; // CPF possui 14 caracteres
+          } else if (camposSelecionados[i] === "data_nascimento") {
+              codigoSQL += " DATE";
+          } else if (camposSelecionados[i] === "endereco") {
+              codigoSQL += " VARCHAR(255)"; // Ajuste o tamanho conforme necessário
+          } else if (camposSelecionados[i] === "cep") {
+              codigoSQL += " VARCHAR(9)"; // CEP possui 9 caracteres
+          } else if (camposSelecionados[i] === "telefone") {
+              codigoSQL += " VARCHAR(15)"; // Ajuste o tamanho conforme necessário
+          } else if (camposSelecionados[i] === "estado") {
+              codigoSQL += " VARCHAR(50)"; // Ajuste o tamanho conforme necessário
+          } else if (camposSelecionados[i] === "username") {
+              codigoSQL += " VARCHAR(50)"; // Ajuste o tamanho conforme necessário
+          } else {
+              codigoSQL += " VARCHAR(255)"; // Caso padrão
+          }
+      }
   }
 
-  codigoSQL += ");\n\n";
+  codigoSQL += ");\n\n"; // Finaliza o comando de criação da tabela
 
+  // Adiciona o comando SQL para inserir os registros na tabela
   codigoSQL += "INSERT INTO " + nomeTabela + " (";
 
   for (var i = 0; i < camposSelecionados.length; i++) {
-    if (i > 0) {
-      codigoSQL += ", ";
-    }
-    codigoSQL += camposSelecionados[i];
+      if (i > 0) {
+          codigoSQL += ", ";
+      }
+      codigoSQL += camposSelecionados[i];
   }
 
   codigoSQL += ") VALUES ";
 
   for (var i = 0; i < numeroLinhas; i++) {
-    if (i > 0) {
-      codigoSQL += ", ";
-    }
-    codigoSQL += "(";
-    for (var j = 0; j < camposSelecionados.length; j++) {
-      if (j > 0) {
-        codigoSQL += ", ";
+      if (i > 0) {
+          codigoSQL += ", ";
       }
-      if (camposSelecionados[j] === "nome") {
-        nome = gerarNome();
-        sobrenome = gerarSobrenome();
-        codigoSQL += "'" + nome + " " + sobrenome + "'";
-      } else if (camposSelecionados[j] === "email") {
-        codigoSQL += "'" + gerarEmail(nome, sobrenome) + "'";
-      } else if (camposSelecionados[j] === "cpf") {
-        codigoSQL += "'" + gerarCPF() + "'";
-      } else if (camposSelecionados[j] === "data_nascimento") {
-        codigoSQL += "'" + gerarDataNascimento() + "'";
-      } else if (camposSelecionados[j] === "endereco") {
-        codigoSQL += "'" + gerarEndereco() + "'";
-      } else if (camposSelecionados[j] === "cep") {
-        codigoSQL += "'" + gerarCEP() + "'";
-      } else if (camposSelecionados[j] === "telefone") {
-        codigoSQL += "'" + gerarTelefone() + "'";
-      } else if (camposSelecionados[j] === "estado") {
-        codigoSQL += "'" + gerarEstado() + "'";
-      } else if (camposSelecionados[j] === "username") {
-        codigoSQL += "'" + gerarUsername(nome, sobrenome) + "'";
-      } else {
-        codigoSQL += "'Dado_" + (i + 1) + "'";
+      codigoSQL += "(";
+      for (var j = 0; j < camposSelecionados.length; j++) {
+          if (j > 0) {
+              codigoSQL += ", ";
+          }
+          if (camposSelecionados[j] === "nome") {
+              nome = gerarNome();
+              sobrenome = gerarSobrenome();
+              codigoSQL += "'" + nome + " " + sobrenome + "'";
+          } else if (camposSelecionados[j] === "email") {
+              codigoSQL += "'" + gerarEmail(nome, sobrenome) + "'";
+          } else if (camposSelecionados[j] === "cpf") {
+              codigoSQL += "'" + gerarCPF() + "'";
+          } else if (camposSelecionados[j] === "data_nascimento") {
+              codigoSQL += "'" + gerarDataNascimento() + "'";
+          } else if (camposSelecionados[j] === "endereco") {
+              codigoSQL += "'" + gerarEndereco() + "'";
+          } else if (camposSelecionados[j] === "cep") {
+              codigoSQL += "'" + gerarCEP() + "'";
+          } else if (camposSelecionados[j] === "telefone") {
+              codigoSQL += "'" + gerarTelefone() + "'";
+          } else if (camposSelecionados[j] === "estado") {
+              codigoSQL += "'" + gerarEstado() + "'";
+          } else if (camposSelecionados[j] === "username") {
+              codigoSQL += "'" + gerarUsername(nome, sobrenome) + "'";
+          } else if (camposSelecionados[j] === "permissao") {
+              codigoSQL += "'" + gerarPermissao(document.getElementById("permissaoInput").value) + "'";
+          } else {
+              codigoSQL += "'Dado_" + (i + 1) + "'";
+          }
       }
-    }
-    codigoSQL += ")";
+      codigoSQL += ")";
   }
 
   document.getElementById("codigoGerado").value = codigoSQL;
 }
 
-function copiarCodigo() {
-  var codigoGerado = document.getElementById("codigoGerado");
-  codigoGerado.select();
-  document.execCommand("copy");
-  document.getElementById("copiado-alert").style.display = "block";
-  setTimeout(function () {
-      document.getElementById("copiado-alert").style.display = "none";
-  }, 2000);
+function downloadCodigo() {
+  var codigoSQL = document.getElementById("codigoGerado").value.trim(); // Remove espaços em branco no início e no final
+
+  if (codigoSQL === "") {
+      alert("O código está vazio. Por favor, gere um código antes de baixar.");
+      return; // Aborta a função se o código estiver vazio
+  }
+
+  var nomeArquivo = "codigo_sql.sql";
+
+  // Cria um elemento <a> temporário
+  var linkDownload = document.createElement("a");
+  linkDownload.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(codigoSQL));
+  linkDownload.setAttribute("download", nomeArquivo);
+
+  // Adiciona o elemento <a> ao corpo do documento
+  document.body.appendChild(linkDownload);
+
+  // Clica no link para iniciar o download
+  linkDownload.click();
+
+  // Remove o elemento <a> temporário
+  document.body.removeChild(linkDownload);
 }
