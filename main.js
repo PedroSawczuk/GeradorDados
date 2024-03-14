@@ -243,3 +243,13 @@ function gerarCodigo() {
 
   document.getElementById("codigoGerado").value = codigoSQL;
 }
+
+function copiarCodigo() {
+  var codigoGerado = document.getElementById("codigoGerado");
+  codigoGerado.select();
+  document.execCommand("copy");
+  document.getElementById("copiado-alert").style.display = "block";
+  setTimeout(function () {
+      document.getElementById("copiado-alert").style.display = "none";
+  }, 2000);
+}
