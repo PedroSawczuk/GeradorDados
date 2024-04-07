@@ -68,6 +68,11 @@ const nomes_M = [
     return email.replace(/\s/g, "");
   }
   
+  function gerarGenero() {
+    var genero = Math.random() < 0.5 ? "Masculino" : "Feminino";
+    return genero;
+}
+
   function gerarCPF() {
     var n = 9;
     var n1 = Math.floor(Math.random() * n + 1);
@@ -169,7 +174,7 @@ function gerarCodigo() {
   var numeroLinhas = document.getElementById("numeroLinhas").value;
   var camposSelecionados = [];
   var checkboxes = document.getElementsByName("dadosCheckbox");
-  var nome, sobrenome; // Declaração das variáveis nome e sobrenome fora do loop
+  var nome, sobrenome, genero;
 
   var nomeCheckbox = document.getElementById("nomeCheckbox");
 
@@ -197,6 +202,8 @@ function gerarCodigo() {
           codigoSQL += camposSelecionados[i];
           if (camposSelecionados[i] === "nome") {
               codigoSQL += " VARCHAR(100)"; // Ajuste o tamanho conforme necessário
+          } else if (camposSelecionados[i] === "genero") {
+              codigoSQL += " VARCHAR(20)"; // Definir tamanho conforme necessário
           } else if (camposSelecionados[i] === "email") {
               codigoSQL += " VARCHAR(255)"; // Ajuste o tamanho conforme necessário
           } else if (camposSelecionados[i] === "cpf") {
@@ -264,8 +271,18 @@ function gerarCodigo() {
               codigoSQL += "'" + gerarUsername(nome, sobrenome) + "'";
           } else if (camposSelecionados[j] === "permissao") {
               codigoSQL += "'" + gerarPermissao(document.getElementById("permissaoInput").value) + "'";
+          } else if (camposSelecionados[j] === "genero") {
+              // Determinar o gênero com base no nome gerado
+              if (nomes_F.includes(nome)) {
+                  genero = "Feminino";
+              } else if (nomes_M.includes(nome)) {
+                  genero = "Masculino";
+              } else {
+                  genero = gerarGenero(); // Caso o nome não esteja nos arrays predefinidos, gerar aleatoriamente
+              }
+              codigoSQL += "'" + genero + "'";
           } else {
-              codigoSQL += "'Dado_" + (i + 1) + "'";
+              codigoSQL += "'Dado_" + (j + 1) + "'";
           }
       }
       codigoSQL += ")";
@@ -273,6 +290,7 @@ function gerarCodigo() {
 
   document.getElementById("codigoGerado").value = codigoSQL;
 }
+
 
 function downloadCodigo() {
   var codigoSQL = document.getElementById("codigoGerado").value.trim(); // Remove espaços em branco no início e no final
